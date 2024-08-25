@@ -4,6 +4,9 @@ import numpy as np
 from prophet import Prophet
 import plotly.graph_objs as go
 
+# Adiciona a logo do aplicativo
+st.image('https://raw.githubusercontent.com/mateus-albuquerque/previsao-valores-prophet/main/logo.png', width=200)
+
 st.title('Previsão de Valores Futuros')
 uploaded_file = st.file_uploader("Carregue sua planilha Excel", type=["xlsx"])
 
