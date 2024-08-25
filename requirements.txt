@@ -1,6 +1,5 @@
 streamlit==1.22.0
 pandas==2.1.4
-numpy==1.21.6
+numpy==1.23.0
 prophet==1.1.4
 plotly==5.17.0
-plotly-express==0.4.1
