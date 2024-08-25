@@ -1,5 +1,5 @@
-streamlit
-pandas
-numpy
-prophet
-plotly
+streamlit==1.22.0
+streamlit==1.22.0
+streamlit==1.22.0
+streamlit==1.22.0
+streamlit==1.22.0
