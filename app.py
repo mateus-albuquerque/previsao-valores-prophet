@@ -30,19 +30,19 @@ if uploaded_file is not None:
     model_prophet = Prophet(daily_seasonality=True)
     model_prophet.fit(df_prophet)
 
-    future = model_prophet.make_future_dataframe(periods=15)
+    future = model_prophet.make_future_dataframe(periods=6)
     forecast = model_prophet.predict(future)
 
-    forecast_5d = forecast[['ds', 'yhat']].tail(15)
-    forecast_5d.set_index('ds', inplace=True)
+    forecast_6d = forecast[['ds', 'yhat']].tail(6)
+    forecast_6d.set_index('ds', inplace=True)
 
-    y_true = df['Valor Liquido Documento'].reindex(forecast_5d.index)
+    y_true = df['Valor Liquido Documento'].reindex(forecast_6d.index)
 
     valid_indices = y_true.notna()
     y_true = y_true[valid_indices]
-    forecast_values_aligned = forecast_5d.loc[valid_indices, 'yhat']
+    forecast_values_aligned = forecast_6d.loc[valid_indices, 'yhat']
 
-    last_15_days = df.tail(30)
+    last_15_days = df.tail(15)
 
     fig = go.Figure()
 
@@ -56,16 +56,16 @@ if uploaded_file is not None:
     ))
 
     fig.add_trace(go.Scatter(
-        x=forecast_5d.index,
-        y=forecast_5d['yhat'],
+        x=forecast_6d.index,
+        y=forecast_6d['yhat'],
         mode='lines+markers',
-        name='Previsão 15 Dias',
+        name='Previsão 5 Dias',
         line=dict(color='red', dash='dash'),
         marker=dict(size=8)
     ))
 
     fig.update_layout(
-        title='Previsão de Valores Futuros - Últimos 30 Dias',
+        title='Previsão de Valores Futuros - Últimos 15 Dias',
         xaxis_title='Data',
         yaxis_title='Valor Líquido Documento',
         legend_title='Legenda',
@@ -74,10 +74,10 @@ if uploaded_file is not None:
 
     st.plotly_chart(fig)
 
-    st.subheader('Tabela de Previsão para os Próximos 15 Dias')
+    st.subheader('Tabela de Previsão para os Próximos 6 Dias')
     forecast_df_formatted = pd.DataFrame({
-        'Data': forecast_5d.index,
-        'Previsão': ['R$ {:,.2f}'.format(val).replace(',', 'X').replace('.', ',').replace('X', '.') for val in forecast_5d['yhat']]
+        'Data': forecast_6d.index,
+        'Previsão': ['R$ {:,.2f}'.format(val).replace(',', 'X').replace('.', ',').replace('X', '.') for val in forecast_6d['yhat']]
     })
     st.write(forecast_df_formatted)
 
