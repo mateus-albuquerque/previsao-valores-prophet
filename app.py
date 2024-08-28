@@ -30,10 +30,10 @@ if uploaded_file is not None:
     model_prophet = Prophet(daily_seasonality=True)
     model_prophet.fit(df_prophet)
 
-    future = model_prophet.make_future_dataframe(periods=5)
+    future = model_prophet.make_future_dataframe(periods=15)
     forecast = model_prophet.predict(future)
 
-    forecast_5d = forecast[['ds', 'yhat']].tail(5)
+    forecast_5d = forecast[['ds', 'yhat']].tail(15)
     forecast_5d.set_index('ds', inplace=True)
 
     y_true = df['Valor Liquido Documento'].reindex(forecast_5d.index)
@@ -42,7 +42,7 @@ if uploaded_file is not None:
     y_true = y_true[valid_indices]
     forecast_values_aligned = forecast_5d.loc[valid_indices, 'yhat']
 
-    last_15_days = df.tail(15)
+    last_15_days = df.tail(30)
 
     fig = go.Figure()
 
@@ -59,13 +59,13 @@ if uploaded_file is not None:
         x=forecast_5d.index,
         y=forecast_5d['yhat'],
         mode='lines+markers',
-        name='Previsão 5 Dias',
+        name='Previsão 15 Dias',
         line=dict(color='red', dash='dash'),
         marker=dict(size=8)
     ))
 
     fig.update_layout(
-        title='Previsão de Valores Futuros - Últimos 15 Dias',
+        title='Previsão de Valores Futuros - Últimos 30 Dias',
         xaxis_title='Data',
         yaxis_title='Valor Líquido Documento',
         legend_title='Legenda',
@@ -74,7 +74,7 @@ if uploaded_file is not None:
 
     st.plotly_chart(fig)
 
-    st.subheader('Tabela de Previsão para os Próximos 5 Dias')
+    st.subheader('Tabela de Previsão para os Próximos 15 Dias')
     forecast_df_formatted = pd.DataFrame({
         'Data': forecast_5d.index,
         'Previsão': ['R$ {:,.2f}'.format(val).replace(',', 'X').replace('.', ',').replace('X', '.') for val in forecast_5d['yhat']]
