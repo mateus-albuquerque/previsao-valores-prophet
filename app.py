@@ -29,10 +29,10 @@ if uploaded_file is not None:
     model_prophet = Prophet(daily_seasonality=True)
     model_prophet.fit(df_prophet)
 
-    future = model_prophet.make_future_dataframe(periods=6)
+    future = model_prophet.make_future_dataframe(periods=5)
     forecast = model_prophet.predict(future)
 
-    forecast_6d = forecast[['ds', 'yhat']].tail(6)
+    forecast_6d = forecast[['ds', 'yhat']].tail(5)
     forecast_6d.set_index('ds', inplace=True)
 
     y_true = df['Valor Liquido Documento'].reindex(forecast_6d.index)
@@ -73,7 +73,7 @@ if uploaded_file is not None:
 
     st.plotly_chart(fig)
 
-    st.subheader('Tabela de Previsão para os Próximos 6 Dias')
+    st.subheader('Tabela de Previsão para os Próximos 5 Dias')
     forecast_df_formatted = pd.DataFrame({
         'Data': forecast_6d.index,
         'Previsão': ['R$ {:,.2f}'.format(val).replace(',', 'X').replace('.', ',').replace('X', '.') for val in forecast_6d['yhat']]
